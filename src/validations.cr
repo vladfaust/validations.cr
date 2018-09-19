@@ -117,6 +117,7 @@ module Validations
   # * `lt: Comparable` - check if `attribute < comparable`
   # * `in: Enumerable` - check if `enumerable.includes?(attribute)`
   # * `size: Enumerable` - check if `enumerable.includes?(attribute.size)`
+  # * `size: Int` - check if `attribute.size == int`
   # * `regex: Regex` - check if `regex.match(attribute)`
   #
   # The `#validate` method can also be redefined to run custom validations:
@@ -159,7 +160,13 @@ module Validations
         {% end %}
 
         {% if rules[:size] %}
-          invalidate({{attribute.stringify}}, "must have size in {{rules[:size]}}") unless {{rules[:size]}}.includes?(value.size)
+          {% if rules[:size].is_a?(Expressions) && rules[:size].expressions.first.is_a?(RangeLiteral) %}
+            invalidate({{attribute.stringify}}, "must have size in {{rules[:size]}}") unless {{rules[:size]}}.includes?(value.size)
+          {% elsif rules[:size].is_a?(NumberLiteral) && rules[:size].kind == :i32 %}
+            invalidate({{attribute.stringify}}, "must have size equal to {{rules[:size]}}") unless value.size == {{rules[:size]}}
+          {% else %}
+            {% raise "'size:' validation must have Enumerable or Int32 as argument. Given: #{rules[:size]}" %}
+          {% end %}
         {% end %}
 
         {% if rules[:regex] %}
