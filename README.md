@@ -63,6 +63,18 @@ pp user.invalid_attributes
 # }
 ```
 
+### Currently implemented inline validations
+
+* `is: Object` - check if `attribute == object`
+* `gte: Comparable` - check if `attribute >= comparable`
+* `lte: Comparable` - check if `attribute <= comparable`
+* `gt: Comparable` - check if `attribute > comparable`
+* `lt: Comparable` - check if `attribute < comparable`
+* `in: Enumerable` - check if `enumerable.includes?(attribute)`
+* `size: Enumerable` - check if `enumerable.includes?(attribute.size)`
+* `size: Int` - check if `attribute.size == int`
+* `regex: Regex` - check if `regex.match(attribute)`
+
 ## Contributing
 
 1. Fork it (<https://github.com/vladfaust/validations.cr/fork>)
