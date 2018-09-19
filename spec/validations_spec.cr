@@ -41,6 +41,12 @@ describe User do
       ideal.valid?.should be_true
     end
 
+    describe "#valid!" do
+      it "returns instance" do
+        ideal.valid!.should be_a(User)
+      end
+    end
+
     it "has empty invalid_attributes" do
       ideal.invalid_attributes.empty?.should be_true
     end

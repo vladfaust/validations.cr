@@ -65,6 +65,7 @@ module Validations
   # Roughly check if the including type is valid, raising `Error` otherwise.
   def valid!
     valid? || raise Error.new(invalid_attributes)
+    self
   end
 
   # A hash of invalid attributes, if any.
