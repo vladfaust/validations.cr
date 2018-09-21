@@ -84,6 +84,7 @@ module Validations
     getter invalid_attributes : Hash(String, Array(String))
 
     def initialize(@invalid_attributes)
+      super("Validation failed: #{@invalid_attributes}")
     end
   end
 
