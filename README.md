@@ -76,7 +76,7 @@ pp user.invalid_attributes
 # }
 ```
 
-### Currently implemented inline validations
+### List of currently implemented rules
 
 * `is: Object` - check if `attribute == object`
 * `gte: Comparable` - check if `attribute >= comparable`
