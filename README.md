@@ -27,11 +27,22 @@ This shard follows [Semantic Versioning 2.0.0](https://semver.org/), so see [rel
 
 ## Usage
 
+This shards allows validation composition (i.e. inclusion of modules with custom validations and rules).
+
 ```crystal
 require "validations"
 
+module CustomValidations
+  include Validations
+
+  rule :email do |attr, value, rule|
+    invalidate(attr, "must be an email") unless /@/.match(value)
+  end
+end
+
 struct User
   include Validations
+  include CustomValidations
 
   property name : String
   property email : String
@@ -42,7 +53,7 @@ struct User
   end
 
   validate name, size: (1..16)
-  validate email, size: (6..64), regex: /\w+@\w+\.\w{2,}/
+  validate email, size: (6..64), email: true
   validate @age, gte: 18
 
   # Will not be run if `@nilable.nil?`
@@ -56,12 +67,11 @@ struct User
 end
 
 user = User.new("Vadim", "e-mail", 17)
-pp user.valid?
-# false
+user.valid? # false
 pp user.invalid_attributes
 # {
 #   "name" => ["must have size in (1..16)", "must not be equal to Vadim"],
-#   "email" => ["must have size in (6..64)", "must match /\\w+@\\w+\\.\\w{2,}/"],
+#   "email" => ["must have size in (6..64)", "must be an email"],
 #   "@age" => ["must be greater than or equal to 18"]
 # }
 ```

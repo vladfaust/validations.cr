@@ -1,68 +1,58 @@
-class Hash(K, V)
-  # Fetch *key* or set it to *value*.
-  #
-  # ```
-  # h = {"foo" => "bar"}
-  # h.fetch_or_set("foo", "baz"); pp h
-  # # {"foo" => "bar"}
-  # h.fetch_or_set("bar", "baz"); pp h
-  # # {"foo" => "bar", "bar" => "baz"}
-  # ```
-  def fetch_or_set(key, value)
-    if has_key?(key)
-      self.[key]
-    else
-      self.[key] = value
-    end
-  end
-end
+require "./ext/*"
+require "./validations/rules/*"
 
 # Enables the including type to define attribute validations.
 #
 # ```
-# struct User
+# module CustomValidations
 #   include Validations
 #
-#   property name : String
-#   property email : String
-#   @age : UInt8?
-#   @nilable : String?
-#
-#   def initialize(@name, @email, @age : UInt8? = nil, @nilable : String? = nil)
+#   rule :custom_rule do |attr, value|
+#     invalidate(attr, "must not be foo") if value == "foo"
 #   end
 #
-#   validate name, size: (1..16)
-#   validate email, size: (6..64), regex: /\w+@\w+\.\w{2,}/
-#   validate @age, gte: 18
-#
-#   # Will not be run if `@nilable.nil?`
-#   validate @nilable, size: (5..10)
-#
-#   # Custom validations are allowed
-#   def validate
-#     previous_def
-#     invalidate("name", "must not be equal to Vadim") if name == "Vadim"
+#   macro included
+#     def validate
+#       previous_def
+#       invalidate("x", "must not be bar") if x == "bar"
+#     end
 #   end
 # end
 #
-# user = User.new("Vadim", "e-mail", 17)
-# pp user.valid?
-# # false
-# pp user.invalid_attributes
-# # {
-# #   "name" => ["must have size in (1..16)", "must not be equal to Vadim"],
-# #   "email" => ["must have size in (6..64)", "must match /\\w+@\\w+\\.\\w{2,}/"],
-# #   "@age" => ["must be greater than or equal to 18"]
-# # }
+# record ObjectToValidate, x : String
+#
+# struct ObjectToValidate
+#   include Validations
+#   include CustomValidations
+#
+#   rule another_custom_rule do |attr, value|
+#     invalidate(attr, "must not be baz") if value == "baz"
+#   end
+#
+#   validate x, size: (1..10), custom_rule: 42, another_custom_rule: true
+#
+#   def validate
+#     previous_def
+#     invalidate("x", "must not be qux") if x == "qux"
+#   end
+# end
+#
+# o = ObjectToValidate.new("aaa")
+# o.valid?             # true
+# o.invalid_attributes # {}
+#
+# o = ObjectToValidate.new("foo")
+# o.valid?             # false
+# o.invalid_attributes # {"x" => ["must not be foo"]}
 # ```
 module Validations
-  # Gently check if the including type is valid.
+  # Soft check if the including type is valid.
   def valid?
     validate
     invalid_attributes.empty?
   end
 
-  # Roughly check if the including type is valid, raising `Error` otherwise.
+  # Strict check if the including type is valid, raise `Error` otherwise.
   def valid!
     valid? || raise Error.new(invalid_attributes)
     self
@@ -70,13 +60,11 @@ module Validations
 
   # A hash of invalid attributes, if any.
   #
-  # Example:
-  #
   # ```
   # pp user.invalid_attributes
-  # # {"name" => ["is too long"], ["is not Slav enough"]}
+  # # {"name" => ["is too long"], ["is not slav enough"]}
   # ```
-  getter invalid_attributes = Hash(String, Array(String)).new
+  getter invalid_attributes : Hash(String, Array(String)) = Hash(String, Array(String)).new
 
   # Raised when the including type has validation errors after calling `valid!`.
   class Error < Exception
@@ -84,7 +72,7 @@ module Validations
     getter invalid_attributes : Hash(String, Array(String))
 
     def initialize(@invalid_attributes)
-      super("Validation failed: #{@invalid_attributes}")
+      super("#{self} validation failed: #{@invalid_attributes}")
     end
   end
 
@@ -98,83 +86,105 @@ module Validations
   end
 
   # Mark *attribute* as invalid with *message*.
+  #
+  # ```
+  # invalidate("name", "is not valid")
+  # ```
   macro invalidate(attribute, message)
     invalid_attributes.fetch_or_set({{attribute}}, Array(String).new).push({{message}})
   end
 
-  # Validate *attribute* with inline *rules* unless it's `nil`.
+  # Validate *attribute* with inline *rules*.
   #
   # ```
-  # validate name, size: (1..16)
-  # validate email, regex: /\w+@\w+\.\w{2,}/
-  # validate age, gte: 18
+  # class User
+  #   property name, age
+  #
+  #   validate name, size: (1..16)
+  #   validate age, gte: 18
+  # end
   # ```
   #
-  # List of currently implemented inline rules:
-  #
-  # * `is: Object` - check if `attribute == object`
-  # * `gte: Comparable` - check if `attribute >= comparable`
-  # * `lte: Comparable` - check if `attribute <= comparable`
-  # * `gt: Comparable` - check if `attribute > comparable`
-  # * `lt: Comparable` - check if `attribute < comparable`
-  # * `in: Enumerable` - check if `enumerable.includes?(attribute)`
-  # * `size: Enumerable` - check if `enumerable.includes?(attribute.size)`
-  # * `size: Int` - check if `attribute.size == int`
-  # * `regex: Regex` - check if `regex.match(attribute)`
+  # Runs `validate_{rule}` for each one of *rules* internally.
+  # You can find currently implemented inline rules in `src/validations/rules`.
+  # The list of inline rules can be extended with `.rule` macro.
   #
   # The `#validate` method can also be redefined to run custom validations:
   #
   # ```
   # def validate
-  #   previous_def # Mandatory, otherwise previous validations won't run
+  #   previous_def # Mandatory, otherwise inline validations won't run
   #   invalidate("name", "some error") if name == "Foo"
+  # end
+  # ```
+  #
+  # It also can be redefined in included modules like this:
+  #
+  # ```
+  # module CustomValidations
+  #   macro included
+  #     def validate
+  #       previous_def
+  #       invalidate("name", "another error") if name == "Bar"
+  #     end
+  #   end
+  # end
+  #
+  # class User
+  #   include Validations # Still need to include `Validations`
+  #   include CustomValidations
   # end
   # ```
   macro validate(attribute, **rules)
     def validate
-      previous_def
+      {% if @type.has_method?(:validate) %}
+        previous_def
+      {% end %}
 
-      unless {{attribute.id}}.nil?
-        value = {{attribute.id}}.not_nil!
+      {% for rule in rules.keys %}
+        validate_{{rule.id.gsub(/\s/, "_")}}({{attribute.stringify}}, {{attribute}}, {{rules[rule]}})
+      {% end %}
+    end
+  end
 
-        {% if rules[:is] %}
-          invalidate({{attribute.stringify}}, "must be equal to {{rules[:is]}}") unless value == {{rules[:is]}}
-        {% end %}
+  # Define a custom *rule*.
+  #
+  # The block will receive three attributes:
+  #
+  # * attribute name, e.g. `"age"`
+  # * actual value, e.g. `20`
+  # * rule which is currently applied, e.g. `18` for `gte: 18`
+  #
+  # Note that some arugments can be ommited in the block argument list (i.e. both `rule do |attr, value|` and `rule do |attr|` are valid as well).
+  #
+  # ```
+  # rule :even do |attr, value, rule|
+  #   unless value.nil?
+  #     if rule
+  #       invalidate(attr, "must be even") unless value.not_nil! % 2 == 0
+  #     else
+  #       invalidate(attr, "must not be even") if value.not_nil! % 2 == 0
+  #     end
+  #   end
+  # end
+  # ```
+  #
+  # Rules can be defined both in the validated object and in an includable module.
+  macro rule(rule, &block)
+    protected def validate_{{rule.id.gsub(/\s/, "_")}}(attr, value, rule)
+      {% if block.args[0] && block.args[0].stringify != "attr" %}
+        {{block.args[0]}} = attr
+      {% end %}
 
-        {% if rules[:gte] %}
-          invalidate({{attribute.stringify}}, "must be greater than or equal to {{rules[:gte]}}") unless value >= {{rules[:gte]}}
-        {% end %}
+      {% if block.args[1] && block.args[1].stringify != "value" %}
+        {{block.args[1]}} = value
+      {% end %}
 
-        {% if rules[:lte] %}
-          invalidate({{attribute.stringify}}, "must be less than or equal to {{rules[:lte]}}") unless value <= {{rules[:lte]}}
-        {% end %}
+      {% if block.args[2] && block.args[2].stringify != "rule" %}
+        {{block.args[2]}} = rule
+      {% end %}
 
-        {% if rules[:gt] %}
-          invalidate({{attribute.stringify}}, "must be greater than {{rules[:gt]}}") unless value > {{rules[:gt]}}
-        {% end %}
-
-        {% if rules[:lt] %}
-          invalidate({{attribute.stringify}}, "must be less than {{rules[:lt]}}") unless value < {{rules[:lt]}}
-        {% end %}
-
-        {% if rules[:in] %}
-          invalidate({{attribute.stringify}}, "must be in {{rules[:in]}}") unless {{rules[:in]}}.includes?(value)
-        {% end %}
-
-        {% if rules[:size] %}
-          {% if rules[:size].is_a?(Expressions) && rules[:size].expressions.first.is_a?(RangeLiteral) %}
-            invalidate({{attribute.stringify}}, "must have size in {{rules[:size]}}") unless {{rules[:size]}}.includes?(value.size)
-          {% elsif rules[:size].is_a?(NumberLiteral) && rules[:size].kind == :i32 %}
-            invalidate({{attribute.stringify}}, "must have size equal to {{rules[:size]}}") unless value.size == {{rules[:size]}}
-          {% else %}
-            {% raise "'size:' validation must have Enumerable or Int32 as argument. Given: #{rules[:size]}" %}
-          {% end %}
-        {% end %}
-
-        {% if rules[:regex] %}
-          invalidate({{attribute.stringify}}, "must match " + {{rules[:regex].stringify}}) unless ({{rules[:regex]}}).match(value)
-        {% end %}
-      end
+      {{block.body.id}}
     end
   end
 end
