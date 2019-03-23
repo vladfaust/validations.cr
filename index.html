@@ -80,7 +80,7 @@
 
 <p>Thanks to all my patrons, I can continue working on beautiful Open Source Software! 🙏</p>
 
-<p><a href="https://github.com/ljuti" target="_blank">Lauri Jutila</a>, <a href="https://seendex.ru" target="_blank">Alexander Maslov</a>, Dainel Vera</p>
+<p><a href="https://github.com/ljuti" target="_blank">Lauri Jutila</a>, <a href="https://seendex.ru" target="_blank">Alexander Maslov</a>, Dainel Vera, Anton Yordanov</p>
 
 <p><em>You can become a patron too in exchange of prioritized support and other perks</em></p>
 
@@ -93,7 +93,7 @@
 <pre><code class="language-yaml">dependencies:
   validations:
     github: vladfaust/validations.cr
-    version: ~> 0.1.5</code></pre>
+    version: ~> 0.2.0</code></pre>
 
 <p>This shard follows <a href="https://semver.org/" target="_blank">Semantic Versioning 2.0.0</a>, so see <a href="https://github.com/vladfaust/callbacks.cr/releases" target="_blank">releases</a> and change the <code>version</code> accordingly.</p>
 
@@ -123,7 +123,7 @@
   <span class="k">def</span> <span class="m">initialize</span>(@name, @email, @age : <span class="t">UInt8</span>? <span class="o">=</span> <span class="n">nil</span>, @nilable : <span class="t">String</span>? <span class="o">=</span> <span class="n">nil</span>)
   <span class="k">end</span>
 
-  validate name, size: (<span class="n">1</span>..<span class="n">16</span>)
+  validate name, size: (<span class="n">1</span>..<span class="n">16</span>), presence: <span class="n">true</span>
   validate email, size: (<span class="n">6</span>..<span class="n">64</span>), email: <span class="n">true</span>
   validate @age, gte: <span class="n">18</span>
 
@@ -148,7 +148,7 @@ pp user.invalid_attributes
 
 <h3>List of currently implemented rules</h3>
 
-<ul><li><code>is: Object</code> - check if <code>attribute == object</code></li><li><code>gte: Comparable</code> - check if <code>attribute >= comparable</code></li><li><code>lte: Comparable</code> - check if <code>attribute <= comparable</code></li><li><code>gt: Comparable</code> - check if <code>attribute > comparable</code></li><li><code>lt: Comparable</code> - check if <code>attribute < comparable</code></li><li><code>in: Enumerable</code> - check if <code>enumerable.includes?(attribute)</code></li><li><code>size: Enumerable</code> - check if <code>enumerable.includes?(attribute.size)</code></li><li><code>size: Int</code> - check if <code>attribute.size == int</code></li><li><code>regex: Regex</code> - check if <code>regex.match(attribute)</code></li></ul>
+<ul><li><code>is: Object</code> - check if <code>attribute == object</code></li><li><code>presence: Bool</code> - check unless <code>attribute.nil?</code></li><li><code>gte: Comparable</code> - check if <code>attribute >= comparable</code></li><li><code>lte: Comparable</code> - check if <code>attribute <= comparable</code></li><li><code>gt: Comparable</code> - check if <code>attribute > comparable</code></li><li><code>lt: Comparable</code> - check if <code>attribute < comparable</code></li><li><code>in: Enumerable</code> - check if <code>enumerable.includes?(attribute)</code></li><li><code>size: Enumerable</code> - check if <code>enumerable.includes?(attribute.size)</code></li><li><code>size: Int</code> - check if <code>attribute.size == int</code></li><li><code>regex: Regex</code> - check if <code>regex.match(attribute)</code></li></ul>
 
 <h2>Contributing</h2>
 
