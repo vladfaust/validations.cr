@@ -13,7 +13,7 @@ describe ":gte" do
 
     it do
       o.valid?.should be_true
-      o.invalid_attributes.empty?.should be_true
+      o.invalid_attributes.should be_nil
     end
   end
 

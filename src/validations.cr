@@ -47,31 +47,37 @@ require "./validations/rules/*"
 # ```
 module Validations
   # Soft check if the including type is valid.
-  def valid?
+  def valid? : Bool
     validate
-    invalid_attributes.empty?
+    invalid_attributes.nil? || invalid_attributes.not_nil!.empty?
   end
 
-  # Strict check if the including type is valid, raise `Error` otherwise.
-  def valid!
-    valid? || raise Error.new(invalid_attributes)
+  # Strict check if the including type is valid and return `self`,
+  # raise `Error` otherwise.
+  def valid! : self
+    valid? || raise Error.new(invalid_attributes.not_nil!)
     self
   end
 
-  # A hash of invalid attributes, if any.
+  # A hash of invalid attributes, if any. Equals to `nil` by default.
   #
   # ```
+  # pp user.invalid_attributes # nil
+  #
+  # user.name = "Ovuvuevuevue enyetuenwuevue ugbemugbem osas"
+  # pp user.valid? # => false
+  #
   # pp user.invalid_attributes
-  # # {"name" => ["is too long"], ["is not slav enough"]}
+  # # {"name" => ["is too long", "is not slav enough"]}
   # ```
-  getter invalid_attributes : Hash(String, Array(String)) = Hash(String, Array(String)).new
+  getter invalid_attributes : Hash(String, Array(String)) | Nil
 
   # Raised when the including type has validation errors after calling `valid!`.
   class Error < Exception
-    # A hash of invalid attributes, similar to `Validations#invalid_attributes`.
+    # A hash of invalid attributes, which is never `nil`.
     getter invalid_attributes : Hash(String, Array(String))
 
-    def initialize(@invalid_attributes)
+    def initialize(@invalid_attributes : Hash(String, Array(String)))
       super("#{self} validation failed: #{@invalid_attributes}")
     end
   end
@@ -80,7 +86,7 @@ module Validations
     {% unless @type.has_method?("validate") %}
       # Run validations, clearing `#invalid_attributes` before.
       def validate
-        invalid_attributes.clear
+        invalid_attributes = nil
       end
     {% end %}
   end
@@ -91,7 +97,7 @@ module Validations
   # invalidate("name", "is not valid")
   # ```
   macro invalidate(attribute, message)
-    invalid_attributes.fetch_or_set({{attribute}}, Array(String).new).push({{message}})
+    (@invalid_attributes ||= Hash(String, Array(String)).new).fetch_or_set({{attribute}}, Array(String).new).push({{message}})
   end
 
   # Validate *attribute* with inline *rules*.
