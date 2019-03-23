@@ -178,16 +178,10 @@ module Validations
   # Rules can be defined both in the validated object and in an includable module.
   macro rule(rule, &block)
     protected def validate_{{rule.id.gsub(/\s/, "_")}}(attr, value, rule)
-      {% if block.args[0] && block.args[0].stringify != "attr" %}
-        {{block.args[0]}} = attr
-      {% end %}
-
-      {% if block.args[1] && block.args[1].stringify != "value" %}
-        {{block.args[1]}} = value
-      {% end %}
-
-      {% if block.args[2] && block.args[2].stringify != "rule" %}
-        {{block.args[2]}} = rule
+      {% for name, index in %w(attr value rule) %}
+        {% if block.args[index] && block.args[index].stringify != name %}
+          {{block.args[index]}} = {{name.id}}
+        {% end %}
       {% end %}
 
       {{block.body.id}}
