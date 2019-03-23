@@ -15,7 +15,7 @@ A validations module for [Crystal](https://crystal-lang.org/).
 
 Thanks to all my patrons, I can continue working on beautiful Open Source Software! 🙏
 
-[Lauri Jutila](https://github.com/ljuti), [Alexander Maslov](https://seendex.ru), Dainel Vera
+[Lauri Jutila](https://github.com/ljuti), [Alexander Maslov](https://seendex.ru), Dainel Vera, Anton Yordanov
 
 *You can become a patron too in exchange of prioritized support and other perks*
 
