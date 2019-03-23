@@ -29,7 +29,7 @@ Add this to your application's `shard.yml`:
 dependencies:
   validations:
     github: vladfaust/validations.cr
-    version: ~> 0.1.6
+    version: ~> 0.2.0
 ```
 
 This shard follows [Semantic Versioning 2.0.0](https://semver.org/), so see [releases](https://github.com/vladfaust/callbacks.cr/releases) and change the `version` accordingly.
