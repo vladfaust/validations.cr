@@ -61,7 +61,7 @@ struct User
   def initialize(@name, @email, @age : UInt8? = nil, @nilable : String? = nil)
   end
 
-  validate name, size: (1..16)
+  validate name, size: (1..16), presence: true
   validate email, size: (6..64), email: true
   validate @age, gte: 18
 
@@ -88,6 +88,7 @@ pp user.invalid_attributes
 ### List of currently implemented rules
 
 * `is: Object` - check if `attribute == object`
+* `presence: Bool` - check unless `attribute.nil?`
 * `gte: Comparable` - check if `attribute >= comparable`
 * `lte: Comparable` - check if `attribute <= comparable`
 * `gt: Comparable` - check if `attribute > comparable`
