@@ -1,5 +1,5 @@
 require "./ext/*"
-require "./validations/rules/*"
+require "./validations/rules"
 
 # Enables the including type to define attribute validations.
 #

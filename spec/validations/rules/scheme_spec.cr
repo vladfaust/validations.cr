@@ -1,4 +1,5 @@
 require "../../spec_helper"
+require "../../../src/validations/rules/scheme"
 
 record StringSchemeObject, x : String
 record ArrayStringsSchemeObject, x : String

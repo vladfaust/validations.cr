@@ -98,6 +98,14 @@ pp user.invalid_attributes
 * `size: Int` - check if `attribute.size == int`
 * `regex: Regex` - check if `regex.match(attribute)`
 
+#### Rules which need to be explicitly required
+
+Some rules are not required with `require "validations"`, you have to require them explicitly.
+
+* `require "validations/rules/scheme"` *(related to URI scheme)*
+  * `scheme: String` - check if `attribute.scheme == string`
+  * `scheme: Array(String)` - check if `array.includes?(attribute.scheme)`
+
 ## Contributing
 
 1. Fork it (<https://github.com/vladfaust/validations.cr/fork>)
