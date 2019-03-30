@@ -104,7 +104,7 @@ Some rules are not required with `require "validations"`, you have to require th
 
 * `require "validations/rules/scheme"` *(related to URI scheme)*
   * `scheme: String` - check if `attribute.scheme == string`
-  * `scheme: Array(String)` - check if `array.includes?(attribute.scheme)`
+  * `scheme: Enumerable` - check if `enumerable.includes?(attribute.scheme)`
 
 ## Contributing
 

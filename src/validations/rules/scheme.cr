@@ -1,7 +1,7 @@
 require "uri"
 
 module Validations
-  protected def validate_scheme(attr, value, scheme : String | Array(String))
+  protected def validate_scheme(attr, value, scheme : String | Enumerable(String))
     return if value.nil?
 
     value_scheme = URI.parse(value).scheme
