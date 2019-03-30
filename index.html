@@ -150,6 +150,12 @@ pp user.invalid_attributes
 
 <ul><li><code>is: Object</code> - check if <code>attribute == object</code></li><li><code>presence: Bool</code> - check unless <code>attribute.nil?</code></li><li><code>gte: Comparable</code> - check if <code>attribute >= comparable</code></li><li><code>lte: Comparable</code> - check if <code>attribute <= comparable</code></li><li><code>gt: Comparable</code> - check if <code>attribute > comparable</code></li><li><code>lt: Comparable</code> - check if <code>attribute < comparable</code></li><li><code>in: Enumerable</code> - check if <code>enumerable.includes?(attribute)</code></li><li><code>size: Enumerable</code> - check if <code>enumerable.includes?(attribute.size)</code></li><li><code>size: Int</code> - check if <code>attribute.size == int</code></li><li><code>regex: Regex</code> - check if <code>regex.match(attribute)</code></li></ul>
 
+<h4>Rules which need to be explicitly required</h4>
+
+<p>Some rules are not required with <code>require "validations"</code>, you have to require them explicitly.</p>
+
+<ul><li><code>require "validations/rules/scheme"</code> <em>(related to URI scheme)</em></li><ul><li><code>scheme: String</code> - check if <code>attribute.scheme == string</code></li><li><code>scheme: Enumerable</code> - check if <code>enumerable.includes?(attribute.scheme)</code></li></ul></ul>
+
 <h2>Contributing</h2>
 
 <ol><li>Fork it (&lt;https://github.com/vladfaust/validations.cr/fork>)</li><li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li><li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li><li>Push to the branch (<code>git push origin my-new-feature</code>)</li><li>Create a new Pull Request</li></ol>
