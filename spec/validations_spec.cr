@@ -25,7 +25,11 @@ struct ObjectToValidate
     invalidate(attr, "must not be baz") if val == "baz"
   end
 
-  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, if: @predicate
+  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, if: if_predicate
+
+  def if_predicate
+    @predicate
+  end
 
   def validate
     previous_def
@@ -43,7 +47,11 @@ struct ObjectToValidateForUnlessPrecidate
     invalidate(attr, "must not be baz") if val == "baz"
   end
 
-  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, unless: @predicate
+  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, unless: unless_predicate
+
+  def unless_predicate
+    @predicate
+  end
 
   def validate
     previous_def
