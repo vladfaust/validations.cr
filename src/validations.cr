@@ -148,9 +148,9 @@ module Validations
       {% end %}
 
       {% if rules[:if] %}
-        if {{ rules[:if] }}.call({{attribute}})
+        if {{ rules[:if] }}.call(self)
           {% for rule in rules.keys %}
-            {% if rule != :if %}
+            {% if rule != :if && rule != :unless %}
               validate_{{rule.id.gsub(/\s/, "_")}}({{attribute.stringify}}, {{attribute}}, {{rules[rule]}})
             {% end %}
           {% end %}

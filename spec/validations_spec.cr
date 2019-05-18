@@ -15,7 +15,7 @@ module CustomValidations
   end
 end
 
-record ObjectToValidate, x : String, predicate : String -> Bool = ->(x : String) { true }
+record ObjectToValidate, x : String, predicate : ObjectToValidate -> Bool = ->(o : ObjectToValidate) { true }
 
 struct ObjectToValidate
   include Validations
@@ -76,11 +76,11 @@ describe Validations do
 
   describe "if clause" do
     it "applies the validation rule if clause evaluates to true" do
-      ObjectToValidate.new("f" * 9, ->(x : String) { x.includes?("f") }).valid?.should be_false
+      ObjectToValidate.new("f" * 9, ->(o : ObjectToValidate) { o.x.includes?("f") }).valid?.should be_false
     end
 
     it "does not apply the validation rule if clause evaluates to false" do
-      ObjectToValidate.new("f" * 9, ->(x : String) { x.includes?("foo") }).valid?.should be_true
+      ObjectToValidate.new("f" * 9, ->(o : ObjectToValidate) { o.x.includes?("foo") }).valid?.should be_true
     end
   end
 
