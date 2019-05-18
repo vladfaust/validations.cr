@@ -15,7 +15,7 @@ module CustomValidations
   end
 end
 
-record ObjectToValidate, x : String, predicate : Bool = true
+record ObjectToValidate, x : String, predicate_a : Bool = true, predicate_b : Bool = false
 
 struct ObjectToValidate
   include Validations
@@ -25,33 +25,12 @@ struct ObjectToValidate
     invalidate(attr, "must not be baz") if val == "baz"
   end
 
-  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, if: if_predicate
-
-  def if_predicate
-    @predicate
-  end
-
-  def validate
-    previous_def
-    invalidate("x", "must not be qux") if x == "qux"
-  end
-end
-
-record ObjectToValidateForUnlessPrecidate, x : String, predicate : Bool = true
-
-struct ObjectToValidateForUnlessPrecidate
-  include Validations
-  include CustomValidations
-
-  rule custom_rule do |attr, val|
-    invalidate(attr, "must not be baz") if val == "baz"
-  end
-
-  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, unless: unless_predicate
-
-  def unless_predicate
-    @predicate
-  end
+  validate x,
+    size: (1..10),
+    size_not_square_of: 3,
+    custom_rule: true,
+    if: @predicate_a,
+    unless: @predicate_b
 
   def validate
     previous_def
@@ -101,22 +80,14 @@ describe Validations do
   end
 
   describe "if clause" do
-    it "applies the validation rule if clause evaluates to true" do
-      ObjectToValidate.new("f" * 9).valid?.should be_false
-    end
-
-    it "does not apply the validation rule if clause evaluates to false" do
+    it "skips validation rule if evaluates to falsey" do
       ObjectToValidate.new("f" * 9, false).valid?.should be_true
     end
   end
 
   describe "unless clause" do
-    it "applies the validation rule unless the clause evaluates to true" do
-      ObjectToValidateForUnlessPrecidate.new("f" * 9).valid?.should be_true
-    end
-
-    it "does not apply the validation rule unless the clause evaluates to false" do
-      ObjectToValidateForUnlessPrecidate.new("f" * 9, false).valid?.should be_false
+    it "skips validation rule if evaluates to truthy" do
+      ObjectToValidate.new("f" * 9, true, true).valid?.should be_true
     end
   end
 

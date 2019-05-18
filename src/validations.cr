@@ -141,6 +141,21 @@ module Validations
   #   include CustomValidations
   # end
   # ```
+  #
+  # You can specify `if:` and `unless:` clauses. Once defined, such a rule
+  # would not be validated unless the conditions are met:
+  #
+  # ```
+  # class User
+  #   include Validations
+  #
+  #   @age : Int32
+  #   @parental_consent : Bool
+  #
+  #   # Only validate `@parental_consent` if `@age` is less than or equal to 14
+  #   validate @parental_consent, is: true, if: @age <= 13
+  # end
+  # ```
   macro validate(attribute, **rules)
     def validate
       {% if @type.has_method?(:validate) %}
@@ -148,19 +163,25 @@ module Validations
       {% end %}
 
       {% if rules[:if] %}
-        _do_validate({{rules}}, {{attribute}}) if ({{ rules[:if] }})
-      {% elsif rules[:unless] %}
-        _do_validate({{rules}}, {{attribute}}) unless ({{ rules[:unless] }})
-      {% else %}
-        _do_validate({{rules}}, {{attribute}})
+        if ({{rules[:if]}})
       {% end %}
-    end
 
-    private def _do_validate(rules, attribute)
+      {% if rules[:unless] %}
+        unless ({{rules[:unless]}})
+      {% end %}
+
       {% for rule in rules.keys %}
         {% if rule != :if && rule != :unless %}
           validate_{{rule.id.gsub(/\s/, "_")}}({{attribute.stringify}}, {{attribute}}, {{rules[rule]}})
         {% end %}
+      {% end %}
+
+      {% if rules[:unless] %}
+        end
+      {% end %}
+
+      {% if rules[:if] %}
+        end
       {% end %}
     end
   end
