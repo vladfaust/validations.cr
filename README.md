@@ -55,10 +55,15 @@ struct User
 
   property name : String
   property email : String
+
   @age : UInt8?
+  @parental_consent : Bool
   @nilable : String?
 
-  def initialize(@name, @email, @age : UInt8? = nil, @nilable : String? = nil)
+  def initialize(
+    @name, @email, @age : UInt8? = nil,
+    @parental_consent = false, @nilable : String? = nil
+  )
   end
 
   validate name, size: (1..16), presence: true
@@ -67,6 +72,9 @@ struct User
 
   # Will not be run if `@nilable.nil?`
   validate @nilable, size: (5..10)
+
+  # Will only be validated if `@age <= 13`
+  validate parental_consent, is: true, if: @age <= 13
 
   # Custom validations are allowed
   def validate
@@ -97,6 +105,11 @@ pp user.invalid_attributes
 * `size: Enumerable` - check if `enumerable.includes?(attribute.size)`
 * `size: Int` - check if `attribute.size == int`
 * `regex: Regex` - check if `regex.match(attribute)`
+
+#### Rule modificators
+
+* `if: Expression` - only run the rule if `Expression` evaluates to a truthy value
+* `unless: Expression` - only run the rule if `Expression` evaluates to a falsey value
 
 #### Rules which need to be explicitly required
 
