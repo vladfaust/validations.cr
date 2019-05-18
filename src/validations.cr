@@ -147,8 +147,20 @@ module Validations
         previous_def
       {% end %}
 
-      {% for rule in rules.keys %}
-        validate_{{rule.id.gsub(/\s/, "_")}}({{attribute.stringify}}, {{attribute}}, {{rules[rule]}})
+      {% if rules[:if] %}
+        if {{ rules[:if] }}.call({{attribute}})
+          {% for rule in rules.keys %}
+            {% if rule != :if %}
+              validate_{{rule.id.gsub(/\s/, "_")}}({{attribute.stringify}}, {{attribute}}, {{rules[rule]}})
+            {% end %}
+          {% end %}
+        end
+      {% else %}
+        {% for rule in rules.keys %}
+          {% if rule != :if && rule != :unless %}
+            validate_{{rule.id.gsub(/\s/, "_")}}({{attribute.stringify}}, {{attribute}}, {{rules[rule]}})
+          {% end %}
+        {% end %}
       {% end %}
     end
   end

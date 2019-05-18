@@ -15,7 +15,7 @@ module CustomValidations
   end
 end
 
-record ObjectToValidate, x : String
+record ObjectToValidate, x : String, predicate : String -> Bool = ->(x : String) { true }
 
 struct ObjectToValidate
   include Validations
@@ -25,7 +25,7 @@ struct ObjectToValidate
     invalidate(attr, "must not be baz") if val == "baz"
   end
 
-  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true
+  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, if: predicate
 
   def validate
     previous_def
@@ -71,6 +71,16 @@ describe Validations do
     it do
       o.valid?.should be_false
       o.invalid_attributes.should eq ({"x" => ["must not be bar"]})
+    end
+  end
+
+  describe "if clause" do
+    it "applies the validation rule if clause evaluates to true" do
+      ObjectToValidate.new("f" * 9, ->(x : String) { x.includes?("f") }).valid?.should be_false
+    end
+
+    it "does not apply the validation rule if clause evaluates to false" do
+      ObjectToValidate.new("f" * 9, ->(x : String) { x.includes?("foo") }).valid?.should be_true
     end
   end
 
