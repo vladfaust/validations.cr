@@ -148,18 +148,18 @@ module Validations
       {% end %}
 
       {% if rules[:if] %}
-        if {{ rules[:if] }}.call(self)
-          {% for rule in rules.keys %}
-            {% if rule != :if && rule != :unless %}
-              validate_{{rule.id.gsub(/\s/, "_")}}({{attribute.stringify}}, {{attribute}}, {{rules[rule]}})
-            {% end %}
-          {% end %}
-        end
+        _do_validate({{rules}}, {{attribute}}) if {{ rules[:if] }}.call(self)
+      {% elsif rules[:unless] %}
+        _do_validate({{rules}}, {{attribute}}) unless {{ rules[:unless] }}.call(self)
       {% else %}
-        {% for rule in rules.keys %}
-          {% if rule != :if && rule != :unless %}
-            validate_{{rule.id.gsub(/\s/, "_")}}({{attribute.stringify}}, {{attribute}}, {{rules[rule]}})
-          {% end %}
+        _do_validate({{rules}}, {{attribute}})
+      {% end %}
+    end
+
+    private def _do_validate(rules, attribute)
+      {% for rule in rules.keys %}
+        {% if rule != :if && rule != :unless %}
+          validate_{{rule.id.gsub(/\s/, "_")}}({{attribute.stringify}}, {{attribute}}, {{rules[rule]}})
         {% end %}
       {% end %}
     end

@@ -33,6 +33,24 @@ struct ObjectToValidate
   end
 end
 
+record ObjectToValidateForUnlessPrecidate, x : String, predicate : ObjectToValidateForUnlessPrecidate -> Bool = ->(o : ObjectToValidateForUnlessPrecidate) { true }
+
+struct ObjectToValidateForUnlessPrecidate
+  include Validations
+  include CustomValidations
+
+  rule custom_rule do |attr, val|
+    invalidate(attr, "must not be baz") if val == "baz"
+  end
+
+  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, unless: predicate
+
+  def validate
+    previous_def
+    invalidate("x", "must not be qux") if x == "qux"
+  end
+end
+
 describe Validations do
   it do
     ObjectToValidate.new("aaa").valid?.should be_true
@@ -81,6 +99,16 @@ describe Validations do
 
     it "does not apply the validation rule if clause evaluates to false" do
       ObjectToValidate.new("f" * 9, ->(o : ObjectToValidate) { o.x.includes?("foo") }).valid?.should be_true
+    end
+  end
+
+  describe "unless clause" do
+    it "applies the validation rule unless the clause evaluates to true" do
+      ObjectToValidateForUnlessPrecidate.new("f" * 9, ->(o : ObjectToValidateForUnlessPrecidate) { o.x.includes?("f") }).valid?.should be_true
+    end
+
+    it "does not apply the validation rule unless the clause evaluates to false" do
+      ObjectToValidateForUnlessPrecidate.new("f" * 9, ->(o : ObjectToValidateForUnlessPrecidate) { o.x.includes?("foo") }).valid?.should be_false
     end
   end
 
