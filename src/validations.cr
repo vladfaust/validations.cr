@@ -148,9 +148,9 @@ module Validations
       {% end %}
 
       {% if rules[:if] %}
-        _do_validate({{rules}}, {{attribute}}) if {{ rules[:if] }}.call(self)
+        _do_validate({{rules}}, {{attribute}}) if ({{ rules[:if] }})
       {% elsif rules[:unless] %}
-        _do_validate({{rules}}, {{attribute}}) unless {{ rules[:unless] }}.call(self)
+        _do_validate({{rules}}, {{attribute}}) unless ({{ rules[:unless] }})
       {% else %}
         _do_validate({{rules}}, {{attribute}})
       {% end %}

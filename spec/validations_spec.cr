@@ -15,7 +15,7 @@ module CustomValidations
   end
 end
 
-record ObjectToValidate, x : String, predicate : ObjectToValidate -> Bool = ->(o : ObjectToValidate) { true }
+record ObjectToValidate, x : String, predicate : Bool = true
 
 struct ObjectToValidate
   include Validations
@@ -25,7 +25,7 @@ struct ObjectToValidate
     invalidate(attr, "must not be baz") if val == "baz"
   end
 
-  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, if: predicate
+  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, if: @predicate
 
   def validate
     previous_def
@@ -33,7 +33,7 @@ struct ObjectToValidate
   end
 end
 
-record ObjectToValidateForUnlessPrecidate, x : String, predicate : ObjectToValidateForUnlessPrecidate -> Bool = ->(o : ObjectToValidateForUnlessPrecidate) { true }
+record ObjectToValidateForUnlessPrecidate, x : String, predicate : Bool = true
 
 struct ObjectToValidateForUnlessPrecidate
   include Validations
@@ -43,7 +43,7 @@ struct ObjectToValidateForUnlessPrecidate
     invalidate(attr, "must not be baz") if val == "baz"
   end
 
-  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, unless: predicate
+  validate x, size: (1..10), size_not_square_of: 3, custom_rule: true, unless: @predicate
 
   def validate
     previous_def
@@ -94,21 +94,21 @@ describe Validations do
 
   describe "if clause" do
     it "applies the validation rule if clause evaluates to true" do
-      ObjectToValidate.new("f" * 9, ->(o : ObjectToValidate) { o.x.includes?("f") }).valid?.should be_false
+      ObjectToValidate.new("f" * 9).valid?.should be_false
     end
 
     it "does not apply the validation rule if clause evaluates to false" do
-      ObjectToValidate.new("f" * 9, ->(o : ObjectToValidate) { o.x.includes?("foo") }).valid?.should be_true
+      ObjectToValidate.new("f" * 9, false).valid?.should be_true
     end
   end
 
   describe "unless clause" do
     it "applies the validation rule unless the clause evaluates to true" do
-      ObjectToValidateForUnlessPrecidate.new("f" * 9, ->(o : ObjectToValidateForUnlessPrecidate) { o.x.includes?("f") }).valid?.should be_true
+      ObjectToValidateForUnlessPrecidate.new("f" * 9).valid?.should be_true
     end
 
     it "does not apply the validation rule unless the clause evaluates to false" do
-      ObjectToValidateForUnlessPrecidate.new("f" * 9, ->(o : ObjectToValidateForUnlessPrecidate) { o.x.includes?("foo") }).valid?.should be_false
+      ObjectToValidateForUnlessPrecidate.new("f" * 9, false).valid?.should be_false
     end
   end
 
