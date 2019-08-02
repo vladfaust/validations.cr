@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Crystal Docs 0.29.0">
+<meta name="generator" content="Crystal Docs 0.30.0">
 
 
 <link href="css/style.css" rel="stylesheet" type="text/css">
@@ -223,21 +223,21 @@ o.invalid_attributes <span class="c"># {&quot;x&quot; =&gt; [&quot;must not be f
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#invalid_attributes%3AHash%28String%2CArray%28String%29%29%3F-instance-method" class="signature"><strong>#invalid_attributes</strong> : Hash(String, Array(String))?</a>
+        <a href="#invalid_attributes:Hash(String,Array(String))?-instance-method" class="signature"><strong>#invalid_attributes</strong> : Hash(String, Array(String))?</a>
         
           <div class="summary"><p>A hash of invalid attributes, if any.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#valid%21%3Aself-instance-method" class="signature"><strong>#valid!</strong> : <span class="k">self</span></a>
+        <a href="#valid!:self-instance-method" class="signature"><strong>#valid!</strong> : <span class="k">self</span></a>
         
           <div class="summary"><p>Strict check if the including type is valid and return <code>self</code>, raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#valid%3F%3ABool-instance-method" class="signature"><strong>#valid?</strong> : Bool</a>
+        <a href="#valid?:Bool-instance-method" class="signature"><strong>#valid?</strong> : Bool</a>
         
           <div class="summary"><p>Soft check if the including type is valid.</p></div>
         
@@ -251,21 +251,21 @@ o.invalid_attributes <span class="c"># {&quot;x&quot; =&gt; [&quot;must not be f
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#invalidate%28attribute%2Cmessage%29-macro" class="signature"><strong>invalidate</strong>(attribute, message)</a>
+        <a href="#invalidate(attribute,message)-macro" class="signature"><strong>invalidate</strong>(attribute, message)</a>
         
           <div class="summary"><p>Mark <em>attribute</em> as invalid with <em>message</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#rule%28rule%2C%26block%29-macro" class="signature"><strong>rule</strong>(rule, &block)</a>
+        <a href="#rule(rule,&block)-macro" class="signature"><strong>rule</strong>(rule, &block)</a>
         
           <div class="summary"><p>Define a custom <em>rule</em>.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#validate%28attribute%2C%2A%2Arules%29-macro" class="signature"><strong>validate</strong>(attribute, **rules)</a>
+        <a href="#validate(attribute,**rules)-macro" class="signature"><strong>validate</strong>(attribute, **rules)</a>
         
           <div class="summary"><p>Validate <em>attribute</em> with inline <em>rules</em>.</p></div>
         
@@ -291,7 +291,7 @@ o.invalid_attributes <span class="c"># {&quot;x&quot; =&gt; [&quot;must not be f
         
         def <strong>invalid_attributes</strong> : <a href="Hash.html">Hash</a>(String, Array(String))?
 
-        <a class="method-permalink" href="#invalid_attributes%3AHash%28String%2CArray%28String%29%29%3F-instance-method">#</a>
+        <a class="method-permalink" href="#invalid_attributes:Hash(String,Array(String))?-instance-method">#</a>
       </div>
       
         <div class="doc"><p>A hash of invalid attributes, if any. Equals to <code>nil</code> by default.</p>
@@ -317,7 +317,7 @@ pp user.invalid_attributes
         
         def <strong>valid!</strong> : <span class="k">self</span>
 
-        <a class="method-permalink" href="#valid%21%3Aself-instance-method">#</a>
+        <a class="method-permalink" href="#valid!:self-instance-method">#</a>
       </div>
       
         <div class="doc"><p>Strict check if the including type is valid and return <code>self</code>,
@@ -336,7 +336,7 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
         
         def <strong>valid?</strong> : Bool
 
-        <a class="method-permalink" href="#valid%3F%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#valid?:Bool-instance-method">#</a>
       </div>
       
         <div class="doc"><p>Soft check if the including type is valid.</p></div>
@@ -359,7 +359,7 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
         
         macro <strong>invalidate</strong>(attribute, message)
 
-        <a class="method-permalink" href="#invalidate%28attribute%2Cmessage%29-macro">#</a>
+        <a class="method-permalink" href="#invalidate(attribute,message)-macro">#</a>
       </div>
       
         <div class="doc"><p>Mark <em>attribute</em> as invalid with <em>message</em>.</p>
@@ -379,7 +379,7 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
         
         macro <strong>rule</strong>(rule, &block)
 
-        <a class="method-permalink" href="#rule%28rule%2C%26block%29-macro">#</a>
+        <a class="method-permalink" href="#rule(rule,&block)-macro">#</a>
       </div>
       
         <div class="doc"><p>Define a custom <em>rule</em>.</p>
@@ -415,7 +415,7 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
         
         macro <strong>validate</strong>(attribute, **rules)
 
-        <a class="method-permalink" href="#validate%28attribute%2C%2A%2Arules%29-macro">#</a>
+        <a class="method-permalink" href="#validate(attribute,**rules)-macro">#</a>
       </div>
       
         <div class="doc"><p>Validate <em>attribute</em> with inline <em>rules</em>.</p>
@@ -429,9 +429,9 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
 
 <p>Runs <code>validate_{rule}</code> for each one of <em>rules</em> internally.
 You can find currently implemented inline rules in <code>src/validations/rules</code>.
-The list of inline rules can be extended with <code><a href="Validations.html#rule%28rule%2C%26block%29-macro">.rule</a></code> macro.</p>
+The list of inline rules can be extended with <code><a href="Validations.html#rule(rule,&block)-macro">.rule</a></code> macro.</p>
 
-<p>The <code><a href="Validations.html#validate%28attribute%2C%2A%2Arules%29-macro">#validate</a></code> method can also be redefined to run custom validations:</p>
+<p>The <code><a href="Validations.html#validate(attribute,**rules)-macro">#validate</a></code> method can also be redefined to run custom validations:</p>
 
 <pre><code><span class="k">def</span> <span class="m">validate</span>
   previous_def <span class="c"># Mandatory, otherwise inline validations won&#39;t run</span>
