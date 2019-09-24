@@ -294,7 +294,9 @@ o.invalid_attributes <span class="c"># {&quot;x&quot; =&gt; [&quot;must not be f
         <a class="method-permalink" href="#invalid_attributes:Hash(String,Array(String))?-instance-method">#</a>
       </div>
       
-        <div class="doc"><p>A hash of invalid attributes, if any. Equals to <code>nil</code> by default.</p>
+        <div class="doc">
+          
+          <p>A hash of invalid attributes, if any. Equals to <code>nil</code> by default.</p>
 
 <pre><code>pp user.invalid_attributes <span class="c"># nil</span>
 
@@ -302,7 +304,8 @@ user.name <span class="o">=</span> <span class="s">&quot;Ovuvuevuevue enyetuenwu
 pp user.valid? <span class="c"># =&gt; false</span>
 
 pp user.invalid_attributes
-<span class="c"># {&quot;name&quot; =&gt; [&quot;is too long&quot;, &quot;is not slav enough&quot;]}</span></code></pre></div>
+<span class="c"># {&quot;name&quot; =&gt; [&quot;is too long&quot;, &quot;is not slav enough&quot;]}</span></code></pre>
+        </div>
       
       <br/>
       <div>
@@ -320,8 +323,11 @@ pp user.invalid_attributes
         <a class="method-permalink" href="#valid!:self-instance-method">#</a>
       </div>
       
-        <div class="doc"><p>Strict check if the including type is valid and return <code>self</code>,
-raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></div>
+        <div class="doc">
+          
+          <p>Strict check if the including type is valid and return <code>self</code>,
+raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p>
+        </div>
       
       <br/>
       <div>
@@ -339,7 +345,10 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
         <a class="method-permalink" href="#valid?:Bool-instance-method">#</a>
       </div>
       
-        <div class="doc"><p>Soft check if the including type is valid.</p></div>
+        <div class="doc">
+          
+          <p>Soft check if the including type is valid.</p>
+        </div>
       
       <br/>
       <div>
@@ -362,9 +371,12 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
         <a class="method-permalink" href="#invalidate(attribute,message)-macro">#</a>
       </div>
       
-        <div class="doc"><p>Mark <em>attribute</em> as invalid with <em>message</em>.</p>
+        <div class="doc">
+          
+          <p>Mark <em>attribute</em> as invalid with <em>message</em>.</p>
 
-<pre><code>invalidate(<span class="s">&quot;name&quot;</span>, <span class="s">&quot;is not valid&quot;</span>)</code></pre></div>
+<pre><code>invalidate(<span class="s">&quot;name&quot;</span>, <span class="s">&quot;is not valid&quot;</span>)</code></pre>
+        </div>
       
       <br/>
       <div>
@@ -382,7 +394,9 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
         <a class="method-permalink" href="#rule(rule,&block)-macro">#</a>
       </div>
       
-        <div class="doc"><p>Define a custom <em>rule</em>.</p>
+        <div class="doc">
+          
+          <p>Define a custom <em>rule</em>.</p>
 
 <p>The block will receive three attributes:</p>
 
@@ -400,7 +414,8 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
   <span class="k">end</span>
 <span class="k">end</span></code></pre>
 
-<p>Rules can be defined both in the validated object and in an includable module.</p></div>
+<p>Rules can be defined both in the validated object and in an includable module.</p>
+        </div>
       
       <br/>
       <div>
@@ -418,7 +433,9 @@ raise <code><a href="Validations/Error.html">Error</a></code> otherwise.</p></di
         <a class="method-permalink" href="#validate(attribute,**rules)-macro">#</a>
       </div>
       
-        <div class="doc"><p>Validate <em>attribute</em> with inline <em>rules</em>.</p>
+        <div class="doc">
+          
+          <p>Validate <em>attribute</em> with inline <em>rules</em>.</p>
 
 <pre><code><span class="k">class</span> <span class="t">User</span>
   property name, age
@@ -452,7 +469,8 @@ The list of inline rules can be extended with <code><a href="Validations.html#ru
 <span class="k">class</span> <span class="t">User</span>
   <span class="k">include</span> <span class="t">Validations</span> <span class="c"># Still need to include `Validations`</span>
   <span class="k">include</span> <span class="t">CustomValidations</span>
-<span class="k">end</span></code></pre></div>
+<span class="k">end</span></code></pre>
+        </div>
       
       <br/>
       <div>
